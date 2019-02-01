@@ -180,7 +180,7 @@ type SimpleTokenizer struct {
 	SplitOn string
 }
 
-type Probs struct {
+type SingleProb struct {
 	maxI uint8
 	prob float64
 }
@@ -363,7 +363,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
-func (b *NaiveBayes) ManyProbability(sentence string) []Probs {
+func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 	sums := make([]float64, len(b.Count))
 	for i := range sums {
 		sums[i] = 1
@@ -386,7 +386,7 @@ func (b *NaiveBayes) ManyProbability(sentence string) []Probs {
 		sums[i] *= b.Probabilities[i]
 	}
 
-	var probs []Probs
+	var probs []SingleProb
 	var denom float64
 	var maxI1 int
 	var maxI2 int
@@ -405,9 +405,9 @@ func (b *NaiveBayes) ManyProbability(sentence string) []Probs {
 
 		denom += sums[i]
 	}
-	var prob1 Probs
-	var prob2 Probs
-	var prob3 Probs
+	var prob1 SingleProb
+	var prob2 SingleProb
+	var prob3 SingleProb
 	prob1.maxI = uint8(maxI1)
 	prob1.prob = sums[maxI1] / denom
 	prob2.maxI = uint8(maxI2)
@@ -417,6 +417,7 @@ func (b *NaiveBayes) ManyProbability(sentence string) []Probs {
 	probs = append(probs, prob1)
 	probs = append(probs, prob2)
 	probs = append(probs, prob3)
+	fmt.Printf("probs: %v\n", probs)
 	return probs
 }
 
