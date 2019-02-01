@@ -180,6 +180,11 @@ type SimpleTokenizer struct {
 	SplitOn string
 }
 
+type Probs struct {
+	maxI uint8
+	prob float64
+}
+
 // Tokenize splits input sentences into a lowecase slice
 // of strings. The tokenizer's SlitOn string is used as a
 // delimiter and it
@@ -358,7 +363,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
-func (b *NaiveBayes) ManyProbability(sentence string) (uint8, float64) {
+func (b *NaiveBayes) ManyProbability(sentence string) []Probs {
 	sums := make([]float64, len(b.Count))
 	for i := range sums {
 		sums[i] = 1
@@ -381,6 +386,7 @@ func (b *NaiveBayes) ManyProbability(sentence string) (uint8, float64) {
 		sums[i] *= b.Probabilities[i]
 	}
 
+	var probs []Probs
 	var denom float64
 	var maxI1 int
 	var maxI2 int
@@ -399,12 +405,19 @@ func (b *NaiveBayes) ManyProbability(sentence string) (uint8, float64) {
 
 		denom += sums[i]
 	}
-
-	fmt.Printf("maxI1: %d, prob: %f", maxI1, sums[maxI1] / denom)
-	fmt.Printf("maxI2: %d, prob: %f", maxI2, sums[maxI2] / denom)
-	fmt.Printf("maxI3: %d, prob: %f", maxI3, sums[maxI2] / denom)
-	//probs = append(probs, uint8(maxI), sums[maxI] / denom)
-	return uint8(maxI1), sums[maxI1] / denom
+	var prob1 Probs
+	var prob2 Probs
+	var prob3 Probs
+	prob1.maxI = uint8(maxI1)
+	prob1.prob = sums[maxI1] / denom
+	prob2.maxI = uint8(maxI2)
+	prob2.prob = sums[maxI2] / denom
+	prob3.maxI = uint8(maxI3)
+	prob3.prob = sums[maxI3] / denom
+	probs = append(probs, prob1)
+	probs = append(probs, prob2)
+	probs = append(probs, prob3)
+	return probs
 }
 
 // OnlineLearn lets the NaiveBayes model learn
