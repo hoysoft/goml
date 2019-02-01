@@ -359,8 +359,8 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 }
 
 type SingleProb struct {
-	maxI uint8
-	prob float64
+	MaxI uint8
+	Prob float64
 }
 
 func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
@@ -388,9 +388,7 @@ func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 
 	var probs []SingleProb
 	var denom float64
-	var maxI1 int
-	var maxI2 int
-	var maxI3 int
+	var maxI1, maxI2, maxI3 int
 	for i := range sums {
 		if sums[i] > sums[maxI1] {
 			maxI3 = maxI2
@@ -405,19 +403,16 @@ func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 
 		denom += sums[i]
 	}
-	var prob1 SingleProb
-	var prob2 SingleProb
-	var prob3 SingleProb
-	prob1.maxI = uint8(maxI1)
-	prob1.prob = sums[maxI1] / denom
-	prob2.maxI = uint8(maxI2)
-	prob2.prob = sums[maxI2] / denom
-	prob3.maxI = uint8(maxI3)
-	prob3.prob = sums[maxI3] / denom
+	var prob1, prob2, prob3 SingleProb
+	prob1.MaxI = uint8(maxI1)
+	prob1.Prob = sums[maxI1] / denom
+	prob2.MaxI = uint8(maxI2)
+	prob2.Prob = sums[maxI2] / denom
+	prob3.MaxI = uint8(maxI3)
+	prob3.Prob = sums[maxI3] / denom
 	probs = append(probs, prob1)
 	probs = append(probs, prob2)
 	probs = append(probs, prob3)
-	fmt.Printf("probs: %v\n", probs)
 	return probs
 }
 
