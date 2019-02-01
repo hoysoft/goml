@@ -358,6 +358,55 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
+func (b *NaiveBayes) ManyProbability(sentence string, number int) (uint8, float64) {
+	sums := make([]float64, len(b.Count))
+	for i := range sums {
+		sums[i] = 1
+	}
+
+	sentence, _, _ = transform.String(b.sanitize, sentence)
+	words := b.Tokenizer.Tokenize(sentence)
+	for _, word := range words {
+		w, ok := b.Words.Get(word)
+		if !ok {
+			continue
+		}
+
+		for i := range sums {
+			sums[i] *= float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
+		}
+	}
+
+	for i := range sums {
+		sums[i] *= b.Probabilities[i]
+	}
+
+	var denom float64
+	var maxI1 int
+	var maxI2 int
+	var maxI3 int
+	for i := range sums {
+		if sums[i] > sums[maxI1] {
+			maxI3 = maxI2
+			maxI2 = maxI1
+			maxI1 = i
+		} else if sums[i] > sums[maxI2] {
+			maxI3 = maxI2
+			maxI2 = i
+		} else if sums[i] > sums[maxI3] {
+			maxI3 = i
+		}
+
+		denom += sums[i]
+	}
+
+	fmt.Printf("maxI1: %d, prob: %f", maxI1, sums[maxI1] / denom)
+	fmt.Printf("maxI2: %d, prob: %f", maxI2, sums[maxI2] / denom)
+	fmt.Printf("maxI3: %d, prob: %f", maxI3, sums[maxI2] / denom)
+	//probs = append(probs, uint8(maxI), sums[maxI] / denom)
+	return uint8(maxI1), sums[maxI1] / denom
+}
+
 // OnlineLearn lets the NaiveBayes model learn
 // from the datastream, waiting for new data to
 // come into the stream from a separate goroutine
