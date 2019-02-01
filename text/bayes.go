@@ -414,12 +414,9 @@ func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 	prob2.prob = sums[maxI2] / denom
 	prob3.maxI = uint8(maxI3)
 	prob3.prob = sums[maxI3] / denom
-	probs[0] = prob1
-	probs[1] = prob2
-	probs[2] = prob3
-	//probs = append(probs, prob1)
-	//probs = append(probs, prob2)
-	//probs = append(probs, prob3)
+	probs = append(probs, prob1)
+	probs = append(probs, prob2)
+	probs = append(probs, prob3)
 	fmt.Printf("probs: %v\n", probs)
 	return probs
 }
