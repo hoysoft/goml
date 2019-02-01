@@ -180,11 +180,6 @@ type SimpleTokenizer struct {
 	SplitOn string
 }
 
-type SingleProb struct {
-	maxI uint8
-	prob float64
-}
-
 // Tokenize splits input sentences into a lowecase slice
 // of strings. The tokenizer's SlitOn string is used as a
 // delimiter and it
@@ -363,6 +358,11 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
+type SingleProb struct {
+	maxI uint8
+	prob float64
+}
+
 func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 	sums := make([]float64, len(b.Count))
 	for i := range sums {
@@ -414,9 +414,12 @@ func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 	prob2.prob = sums[maxI2] / denom
 	prob3.maxI = uint8(maxI3)
 	prob3.prob = sums[maxI3] / denom
-	probs = append(probs, prob1)
-	probs = append(probs, prob2)
-	probs = append(probs, prob3)
+	probs[0] = prob1
+	probs[1] = prob2
+	probs[2] = prob3
+	//probs = append(probs, prob1)
+	//probs = append(probs, prob2)
+	//probs = append(probs, prob3)
 	fmt.Printf("probs: %v\n", probs)
 	return probs
 }
