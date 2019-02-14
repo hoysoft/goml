@@ -86,6 +86,8 @@ import (
 	"golang.org/x/text/transform"
 
 	"github.com/cdipaolo/goml/base"
+
+	"github.com/reiver/go-porterstemmer"
 )
 
 /*
@@ -178,6 +180,16 @@ type Tokenizer interface {
 // SplitOn string – space, for example
 type SimpleTokenizer struct {
 	SplitOn string
+}
+
+func Stemfunc(words []string) []string {
+	
+	for i, word := range words {
+		stem := porterstemmer.StemString(word)
+		words[i] = stem
+	}
+
+	return words
 }
 
 // Tokenize splits input sentences into a lowecase slice
@@ -279,7 +291,9 @@ func (b *NaiveBayes) Predict(sentence string) uint8 {
 
 	sentence, _, _ = transform.String(b.sanitize, sentence)
 	words := b.Tokenizer.Tokenize(sentence)
-	for _, word := range words {
+	words2 := Stemfunc(words)
+
+	for _, word := range words2 {
 		w, ok := b.Words.Get(word)
 		if !ok {
 			continue
@@ -371,7 +385,9 @@ func (b *NaiveBayes) ManyProbability(sentence string) []SingleProb {
 
 	sentence, _, _ = transform.String(b.sanitize, sentence)
 	words := b.Tokenizer.Tokenize(sentence)
-	for _, word := range words {
+	words2 := Stemfunc(words)
+
+	for _, word := range words2 {
 		w, ok := b.Words.Get(word)
 		if !ok {
 			continue
@@ -441,6 +457,8 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 			// sanitize and break up document
 			sanitized, _, _ := transform.String(b.sanitize, point.X)
 			words := b.Tokenizer.Tokenize(sanitized)
+			// stemmer
+			words2 := Stemfunc(words)
 
 			C := int(point.Y)
 
@@ -460,7 +478,7 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 			seenCount := make(map[string]int)
 
 			// update probabilities for words
-			for _, word := range words {
+			for _, word := range words2 {
 				if len(word) < 3 {
 					continue
 				}
@@ -578,6 +596,16 @@ func (b *NaiveBayes) RestoreWithFuncs(data io.Reader, sanitizer func(rune) bool,
 	}
 	b.sanitize = transform.RemoveFunc(sanitizer)
 	b.Tokenizer = tokenizer
+	return nil
+}
+
+func (b *NaiveBayes) RestoreFromDB(bytes []byte) error {
+	
+	err := b.Restore(bytes)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
