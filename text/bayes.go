@@ -344,7 +344,9 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 
 	sentence, _, _ = transform.String(b.sanitize, sentence)
 	words := b.Tokenizer.Tokenize(sentence)
-	for _, word := range words {
+	words2 := Stemfunc(words)
+	
+	for _, word := range words2 {
 		w, ok := b.Words.Get(word)
 		if !ok {
 			continue
