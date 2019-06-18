@@ -204,7 +204,7 @@ func (t *SimpleTokenizer) Tokenize(sentence string) []string {
 // concurrentMap allows concurrency-friendly map
 // access via its exported Get and Set methods
 type concurrentMap struct {
-	sync.RWMutex
+	*sync.RWMutex
 	words map[string]Word
 }
 
@@ -279,7 +279,7 @@ type Word struct {
 // comply with the transform.RemoveFunc interface
 func NewNaiveBayes(stream <-chan base.TextDatapoint, classes uint8, sanitize func(rune) bool) *NaiveBayes {
 	return &NaiveBayes{
-		Words:         concurrentMap{sync.RWMutex{}, make(map[string]Word)},
+		Words:         concurrentMap{&sync.RWMutex{}, make(map[string]Word)},
 		Count:         make([]uint64, classes),
 		Probabilities: make([]float64, classes),
 
