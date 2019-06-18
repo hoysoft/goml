@@ -240,9 +240,10 @@ func (m *concurrentMap) Set(k string, v Word) {
 
 // copies the word map
 func (m *concurrentMap) Copy(k *concurrentMap) *concurrentMap {
-	m.Lock()
+	m.RLock()
 	m.words = k.words
-	m.Unlock()
+	m.RUnlock()
+	k.RUnlock()
 	return k
 }
 
