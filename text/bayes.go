@@ -238,6 +238,14 @@ func (m *concurrentMap) Set(k string, v Word) {
 	m.Unlock()
 }
 
+// copies the word map
+func (m *concurrentMap) Copy(k *concurrentMap) *concurrentMap {
+	m.Lock()
+	m.words = k.words
+	m.Unlock()
+	return k
+}
+
 // Word holds the structural
 // information needed to calculate
 // the probability of
