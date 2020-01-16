@@ -467,9 +467,9 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 		if more {
 			// sanitize and break up document
 			sanitized, _, _ := transform.String(b.sanitize, point.X)
-			words := b.Tokenizer.Tokenize(sanitized)
+			words2 := b.Tokenizer.Tokenize(sanitized)
 			// stemmer
-			words2 := Stemfunc(words)
+			words := Stemfunc(words2)
 
 			C := int(point.Y)
 
@@ -489,7 +489,7 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 			seenCount := make(map[string]int)
 
 			// update probabilities for words
-			for _, word := range words2 {
+			for _, word := range words {
 				if len(word) < 3 {
 					continue
 				}
