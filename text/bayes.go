@@ -517,7 +517,7 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 			for term := range seenCount {
 				tmp, _ := b.Words.Get(term)
 				tmp.DocsSeen++
-				fmt.Printf("DocsSeen: %v", tmp.DocsSeen)
+				fmt.Printf("term: %s\n Word: %v\n DocsSeen: %v\n", term, tmp, tmp.DocsSeen)
 				b.Words.Set(term, tmp)
 			}
 		} else {
