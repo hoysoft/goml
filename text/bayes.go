@@ -233,12 +233,9 @@ func (m *concurrentMap) Get(w string) (Word, bool) {
 
 // Set sets word k's value to v in h's Word map
 func (m *concurrentMap) Set(k string, v Word) {
-	fmt.Printf("1word from map: %v\n", m.words[k])
-	fmt.Printf("new Word: %v\n", v)
 	m.Lock()
 	m.words[k] = v
 	m.Unlock()
-	fmt.Printf("2word from map: %v\n", m.words[k])
 }
 
 // copies the word map
