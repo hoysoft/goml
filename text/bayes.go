@@ -272,7 +272,7 @@ type Word struct {
 	// DocsSeen is the same as Seen but
 	// a word is only counted once even
 	// if it's in a document multiple times
-	DocsSeen uint64 `json:"-"`
+	DocsSeen uint64
 }
 
 // NewNaiveBayes returns a NaiveBayes model the
