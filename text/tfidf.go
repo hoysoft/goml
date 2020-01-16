@@ -3,6 +3,7 @@ package text
 import (
 	"math"
 	"sort"
+	"fmt"
 
 	"golang.org/x/text/transform"
 )
@@ -173,5 +174,6 @@ func TermFrequencies(document []string) Frequencies {
 // this is calculated
 func (t *TFIDF) InverseDocumentFrequency(word string) float64 {
 	w, _ := t.Words.Get(word)
+	fmt.Printf("word: %v\n document count: %v\n DocsSeen: %v\n", w, t.DocumentCount, w.DocsSeen)
 	return math.Log(float64(t.DocumentCount)) - math.Log(float64(w.DocsSeen)+1)
 }
