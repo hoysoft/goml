@@ -233,9 +233,12 @@ func (m *concurrentMap) Get(w string) (Word, bool) {
 
 // Set sets word k's value to v in h's Word map
 func (m *concurrentMap) Set(k string, v Word) {
+	fmt.Printf("1word from map: %v\n", m.words[k])
+	fmt.Printf("new Word: %v\n", v)
 	m.Lock()
 	m.words[k] = v
 	m.Unlock()
+	fmt.Printf("2word from map: %v\n", m.words[k])
 }
 
 // copies the word map
@@ -513,12 +516,12 @@ func (b *NaiveBayes) OnlineLearn(errors chan<- error) {
 				seenCount[word] = 1
 			}
 			
-			fmt.Printf("seenCount: %v\n", seenCount)
+			//fmt.Printf("seenCount: %v\n", seenCount)
 			// add to DocsSeen
 			for term := range seenCount {
 				tmp, _ := b.Words.Get(term)
 				tmp.DocsSeen++
-				fmt.Printf("term: %s\n Word: %v\n DocsSeen: %v\n", term, tmp, tmp.DocsSeen)
+				//fmt.Printf("term: %s\n Word: %v\n DocsSeen: %v\n", term, tmp, tmp.DocsSeen)
 				b.Words.Set(term, tmp)
 			}
 		} else {
