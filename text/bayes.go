@@ -383,6 +383,48 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
+func (b *NaiveBayes) ProbabilityTFIDF(sentence string) (uint8, float64) {
+	sums := make([]float64, len(b.Count))
+	for i := range sums {
+		sums[i] = 1
+	}
+
+	sentence, _, _ = transform.String(b.sanitize, sentence)
+	words := b.Tokenizer.Tokenize(sentence)
+	words2 := Stemfunc(words)
+	
+	// cast model to TFIDF
+	tf := TFIDF(*b)
+	for _, word := range words2 {
+		w, ok := b.Words.Get(word)
+		if !ok {
+			continue
+		}
+
+		freq := tf.TFIDF(word, sentence)
+
+		for i := range sums {
+			sums[i] *= float64(float64(w.Count[i]+1)*freq) / float64(w.Seen+b.DictCount)
+		}
+	}
+
+	for i := range sums {
+		sums[i] *= b.Probabilities[i]
+	}
+
+	var denom float64
+	var maxI int
+	for i := range sums {
+		if sums[i] > sums[maxI] {
+			maxI = i
+		}
+
+		denom += sums[i]
+	}
+
+	return uint8(maxI), sums[maxI] / denom
+}
+
 type SingleProb struct {
 	MaxI uint8
 	Prob float64
