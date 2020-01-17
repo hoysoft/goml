@@ -402,15 +402,16 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 		}
 
 		weight := tf.TFIDF(word, sentence)
-
+		//fmt.Printf("weighted count: %v", (float64(w.Count[i]+1)*weight))
 		for i := range sums {
+			fmt.Printf("weighted count: %v\n", (float64(w.Count[i]+1)*weight))
 			sums[i] *= float64(float64(w.Count[i]+1)*weight) / float64(w.Seen+b.DictCount)
 			sums1[i] *= float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
 		}
 	}
 
 	var wprint bool
-	if (math.Abs(sums[0] - sums[1]) < 0.00000000000000000001) {
+	if (math.Abs(sums[0] - sums[1]) < 0.00000000000000001) {
 		fmt.Printf("diff: %v\n", math.Abs(sums[0] - sums[1]))
 		fmt.Printf("sums: %v\n", sums)
 		fmt.Printf("sums1: %v\n", sums1)
