@@ -385,10 +385,8 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 
 func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64) {
 	sums := make([]float64, len(b.Count))
-	sums1 := make([]float64, len(b.Count))
 	for i := range sums {
 		sums[i] = 1
-		sums1[i] = 1
 	}
 
 	sentence, _, _ = transform.String(b.sanitize, sentence)
@@ -401,59 +399,28 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 			continue
 		}
 
-		weight := tf.TFIDF(word, sentence)
-		weight = float64(weight)
+		weight := float64(tf.TFIDF(word, sentence))
 		for i := range sums {
 			count := float64(w.Count[i]+1)
 			totals := float64(w.Seen+b.DictCount)
-			fmt.Printf("count: %v, weighted count: %v\n", count, count * weight)
-			fmt.Printf("prob: %v, weighted prob: %v\n", count / totals, count * weight / totals)
-			sums[i] = count * weight / totals
-			sums1[i] = count / totals
-			//sums[i] *= float64(float64(w.Count[i]+1)*weight) / float64(w.Seen+b.DictCount)
-			//sums1[i] *= float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
+			sums[i] *= count * weight / totals
 		}
-	}
-
-	var wprint bool
-	if (math.Abs(sums[0] - sums[1]) < 0.000000000000001) {
-		fmt.Printf("diff: %v\n", math.Abs(sums[0] - sums[1]))
-		fmt.Printf("sums: %v\n", sums)
-		fmt.Printf("sums1: %v\n", sums1)
-		
-		wprint = true
 	}
 
 	for i := range sums {
 		sums[i] *= b.Probabilities[i]
-		sums1[i] *= b.Probabilities[i]
 	}
 
 	var denom float64
 	var maxI int
-	var denom1 float64
-	var maxI1 int
 	for i := range sums {
 		if sums[i] > sums[maxI] {
 			maxI = i
 		}
 
 		denom += sums[i]
-		if sums1[i] > sums1[maxI1] {
-			maxI1 = i
-		}
-
-		denom1 += sums1[i]
 	}
 
-	if (wprint == true) {
-		fmt.Printf("1- maxI: %v, prob: %v\n", maxI, sums[maxI] / denom)
-		fmt.Printf("2- maxI: %v, prob: %v\n", maxI1, sums1[maxI1] / denom1)
-		fmt.Printf("diff: %v\n", math.Abs(sums[maxI] / denom - sums1[maxI1] / denom1))
-		fmt.Printf("------------\n")
-		wprint = false
-	}
-	
 	return uint8(maxI), sums[maxI] / denom
 }
 
