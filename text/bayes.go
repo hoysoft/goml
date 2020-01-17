@@ -406,9 +406,11 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 		}
 	}
 
+	fmt.Printf("sums 1: %v\n", sums)
 	for i := range sums {
 		sums[i] *= b.Probabilities[i]
 	}
+	fmt.Printf("sums 2: %v\n", sums)
 
 	var denom float64
 	var maxI int
