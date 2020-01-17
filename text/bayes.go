@@ -410,7 +410,7 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 	}
 
 	var wprint bool
-	if (math.Abs(sums[0] - sums[1]) > 0.0000001) {
+	if (math.Abs(sums[0] - sums[1]) > 0.00001) {
 		fmt.Printf("diff: %v\n", math.Abs(sums[0] - sums[1]))
 		fmt.Printf("sums: %v\n", sums)
 		fmt.Printf("sums1: %v\n", sums1)
@@ -443,6 +443,7 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 	if (wprint == true) {
 		fmt.Printf("1- maxI: %v, prob: %v\n", maxI, sums[maxI] / denom)
 		fmt.Printf("2- maxI: %v, prob: %v\n", maxI1, sums1[maxI1] / denom1)
+		fmt.Printf("diff: %v\n", math.Abs(sums[maxI] / denom - sums1[maxI1] / denom1))
 		fmt.Printf("------------\n")
 		wprint = false
 	}
