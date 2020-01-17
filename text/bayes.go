@@ -403,15 +403,18 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 
 		for i := range sums {
 			sums[i] *= float64(float64(w.Count[i]+1)*weight) / float64(w.Seen+b.DictCount)
-			fmt.Printf("sums 0: %v\n", sums)
+			
 		}
 	}
 
-	fmt.Printf("sums 1: %v\n", sums)
+	if (sums[0] - sums[1] < 0.000000001) {
+		fmt.Printf("sums: %v\n", sums)
+		fmt.Printf("--------\n")
+	}
+
 	for i := range sums {
 		sums[i] *= b.Probabilities[i]
 	}
-	fmt.Printf("sums 2: %v\n", sums)
 
 	var denom float64
 	var maxI int
