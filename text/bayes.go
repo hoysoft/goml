@@ -362,7 +362,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 		}
 
 		for i := range sums {
-			sums[i] *= float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
+			sums[i] += float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
 		}
 	}
 
@@ -404,7 +404,7 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 			count := float64(w.Count[i]+1)
 			seen := float64(w.Seen) * weight
 			totals := float64(seen+float64(b.DictCount))
-			sums[i] *= count * weight / totals
+			sums[i] += count * weight / totals
 		}
 	}
 
