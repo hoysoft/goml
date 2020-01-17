@@ -407,9 +407,8 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 		}
 	}
 
-	if (sums[0] - sums[1] < 0.000000001) {
+	if (math.Abs(sums[0] - sums[1]) < 0.000001) {
 		fmt.Printf("sums: %v\n", sums)
-		fmt.Printf("--------\n")
 	}
 
 	for i := range sums {
