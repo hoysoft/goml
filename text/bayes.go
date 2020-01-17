@@ -362,7 +362,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 		}
 
 		for i := range sums {
-			sums[i] += float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
+			sums[i] *= float64(w.Count[i]+1) / float64(w.Seen+b.DictCount)
 		}
 	}
 
@@ -394,17 +394,19 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 	words2 := Stemfunc(words)
 	
 	for _, word := range words2 {
-		w, ok := b.Words.Get(word)
+		/* w, ok := b.Words.Get(word)
 		if !ok {
 			continue
-		}
+		} */
 
 		weight := float64(tf.TFIDF(word, sentence))
 		for i := range sums {
-			count := float64(w.Count[i]+1)
-			seen := float64(w.Seen) * weight
-			totals := float64(seen+float64(b.DictCount))
-			sums[i] += count * weight / totals
+			// count := float64(w.Count[i]+1)
+			// seen := float64(w.Seen) * weight
+			// totals := float64(seen+float64(b.DictCount))
+			// sums[i] *= count * weight / totals
+			// (word_count_in_class + 1)/(total_words_in_class+total_unique_words_in_class)
+			sums[i] += weight
 		}
 	}
 
