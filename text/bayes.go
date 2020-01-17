@@ -442,7 +442,7 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64
 
 	if (wprint == true) {
 		fmt.Printf("1- maxI: %v, prob: %v\n", maxI, sums[maxI] / denom)
-		fmt.Printf("2- maxI: %v, prob: %v\n", maxI1, sums[maxI1] / denom1)
+		fmt.Printf("2- maxI: %v, prob: %v\n", maxI1, sums1[maxI1] / denom1)
 		fmt.Printf("------------\n")
 		wprint = false
 	}
