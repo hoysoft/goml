@@ -383,7 +383,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
-func (b *NaiveBayes) ProbabilityTFIDF(sentence string) (uint8, float64) {
+func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf *TFIDF) (uint8, float64) {
 	sums := make([]float64, len(b.Count))
 	for i := range sums {
 		sums[i] = 1
@@ -393,8 +393,6 @@ func (b *NaiveBayes) ProbabilityTFIDF(sentence string) (uint8, float64) {
 	words := b.Tokenizer.Tokenize(sentence)
 	words2 := Stemfunc(words)
 	
-	// cast model to TFIDF
-	tf := TFIDF(*b)
 	for _, word := range words2 {
 		w, ok := b.Words.Get(word)
 		if !ok {
