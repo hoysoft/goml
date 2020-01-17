@@ -383,7 +383,7 @@ func (b *NaiveBayes) Probability(sentence string) (uint8, float64) {
 	return uint8(maxI), sums[maxI] / denom
 }
 
-func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf *TFIDF) (uint8, float64) {
+func (b *NaiveBayes) ProbabilityTFIDF(sentence string, tf TFIDF) (uint8, float64) {
 	sums := make([]float64, len(b.Count))
 	for i := range sums {
 		sums[i] = 1
