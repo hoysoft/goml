@@ -328,6 +328,52 @@ func (b *NaiveBayes) Predict(sentence string) uint8 {
 	return uint8(maxI)
 }
 
+func (b *NaiveBayes) PredictTFIDF(sentence string, tf TFIDF) (uint8, float64) {
+	sums := make([]float64, len(b.Count))
+
+	sentence, _, _ = transform.String(b.sanitize, sentence)
+	words := b.Tokenizer.Tokenize(sentence)
+	words2 := Stemfunc(words)
+
+	for _, word := range words2 {
+		w, ok := b.Words.Get(word)
+		if !ok {
+			continue
+		}
+		weight := float64(tf.TFIDF(word, sentence))
+		for i := range sums {
+			count := float64(w.Count[i])
+			seen := float64(w.Seen)
+			totals := float64(seen+float64(b.DictCount))
+			sums[i] += math.Log(float64(((count * weight)+1)) / totals)
+		}
+	}
+	
+	for i := range sums {
+		sums[i] += math.Log(b.Probabilities[i])
+	}
+
+	// find best class
+	// var maxI int
+	// for i := range sums {
+	// 	if sums[i] > sums[maxI] {
+	// 		maxI = i
+	// 	}
+	// }
+
+	var denom float64
+	var maxI int
+	for i := range sums {
+		if sums[i] > sums[maxI] {
+			maxI = i
+		}
+
+		denom += sums[i]
+	}
+
+	return uint8(maxI), sums[maxI] / denom
+}
+
 // Probability takes in a small document, returns the
 // estimated class of the document based on the model
 // as well as the probability that the model is part
